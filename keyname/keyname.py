@@ -8,8 +8,8 @@ import os
 def unpack(filename):
 
     return {
-        key : value
-        for key, value in (
+        k : v
+        for k, v in [
             str.split('=')
             for str in os.path.basename(filename).split('+')
         ] + [ ('_', filename) ]
