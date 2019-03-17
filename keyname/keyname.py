@@ -28,11 +28,10 @@ def pack(dict):
     for k, v in stringified.items():
 
         assert not any(c in k or c in v for c in ('=', '+'))
-        assert len(k)
 
         if k == 'ext':
             ext = str(v)
-        elif k[0] == '_':
+        elif k.startswith('_'):
             underscore[k] = v
         else:
             regular[k] = v
