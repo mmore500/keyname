@@ -136,7 +136,7 @@ class TestKeyname(unittest.TestCase):
              '_hash' : 'asdf',
              'foobar' : '20',
              'seed' : '100',
-         }) == "foobar=20+seed=100+_hash=asdf+ext=None"
+         }) == "foobar=20+seed=100+_hash=asdf"
 
 
 
