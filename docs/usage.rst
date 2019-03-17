@@ -2,34 +2,6 @@
 Usage
 =====
 
-=======
-keyname
-=======
-
-
-.. image:: https://img.shields.io/pypi/v/keyname.svg
-        :target: https://pypi.python.org/pypi/keyname
-
-.. image:: https://img.shields.io/travis/mmore500/keyname.svg
-        :target: https://travis-ci.org/mmore500/keyname
-
-.. image:: https://readthedocs.org/projects/keyname/badge/?version=latest
-        :target: https://keyname.readthedocs.io/en/latest/?badge=latest
-        :alt: Documentation Status
-
-
-
-
-Easily pack and unpack metadata in a filename.
-
-
-* Free software: MIT license
-* Documentation: https://keyname.readthedocs.io.
-
-
-Usage
---------
-
 Keyname is built around the following file name convention:
 
 - key/value pairs are constructed with :code:`=` between the key and value
