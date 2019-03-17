@@ -7,7 +7,7 @@
 import unittest
 from click.testing import CliRunner
 
-from keyname import keyname as kf
+from keyname import keyname as kn
 from keyname import cli
 
 
@@ -31,45 +31,45 @@ class TestKeyname(unittest.TestCase):
 
         name = "seed=100+foobar=20+_hash=asdf+ext=.txt"
         goal['_'] = name
-        assert kf.unpack(name) == goal
+        assert kn.unpack(name) == goal
 
         # reorderings
         name = "foobar=20+seed=100+_hash=asdf+ext=.txt"
         goal['_'] = name
-        assert kf.unpack(name) == goal
+        assert kn.unpack(name) == goal
 
         name = "_hash=asdf+foobar=20+seed=100+ext=.txt"
         goal['_'] = name
-        assert kf.unpack(name) == goal
+        assert kn.unpack(name) == goal
 
         # should ignore path
         name = "path/seed=100+foobar=20+_hash=asdf+ext=.txt"
         goal['_'] = name
-        assert kf.unpack(name) == goal
+        assert kn.unpack(name) == goal
 
         name = "~/more=path/+blah/seed=100+foobar=20+_hash=asdf+ext=.txt"
         goal['_'] = name
-        assert kf.unpack(name) == goal
+        assert kn.unpack(name) == goal
 
     def test_001_pack(self):
         """Test packing."""
 
         # reorderings
-        assert kf.pack({
+        assert kn.pack({
              'seed' : '100',
              'foobar' : '20',
              '_hash' : 'asdf',
              'ext' : '.txt'
          }) == "foobar=20+seed=100+_hash=asdf+ext=.txt"
 
-        assert kf.pack({
+        assert kn.pack({
              '_hash' : 'asdf',
              'seed' : '100',
              'foobar' : '20',
              'ext' : '.txt'
          }) == "foobar=20+seed=100+_hash=asdf+ext=.txt"
 
-        assert kf.pack({
+        assert kn.pack({
              '_hash' : 'asdf',
              'foobar' : '20',
              'ext' : '.txt',
@@ -77,21 +77,21 @@ class TestKeyname(unittest.TestCase):
          }) == "foobar=20+seed=100+_hash=asdf+ext=.txt"
 
         # different values
-        assert kf.pack({
+        assert kn.pack({
              'seed' : '100',
              'foobar' : 'blip',
              '_hash' : 'asdf',
              'ext' : '.txt'
          }) == "foobar=blip+seed=100+_hash=asdf+ext=.txt"
 
-        assert kf.pack({
+        assert kn.pack({
              'seed' : 'a100',
              'foobar' : 'blip',
              '_hash' : 'asdf',
              'ext' : '.txt'
          }) == "foobar=blip+seed=a100+_hash=asdf+ext=.txt"
 
-        assert kf.pack({
+        assert kn.pack({
              'aseed' : 'a100',
              'foobar' : 'blip',
              '_hash' : 'asdf',
@@ -99,7 +99,7 @@ class TestKeyname(unittest.TestCase):
          }) == "aseed=a100+foobar=blip+_hash=asdf+ext=.txt"
 
         # should ignore '_' key
-        assert kf.pack({
+        assert kn.pack({
              'seed' : '100',
              'foobar' : '20',
              '_hash' : 'asdf',
@@ -107,7 +107,7 @@ class TestKeyname(unittest.TestCase):
              '_' : 'foobar=20+seed=100+_hash=asdf+ext=.txt'
          }) == "foobar=20+seed=100+_hash=asdf+ext=.txt"
 
-        assert kf.pack({
+        assert kn.pack({
              'seed' : '100',
              'foobar' : '20',
              '_hash' : 'asdf',
@@ -115,7 +115,7 @@ class TestKeyname(unittest.TestCase):
              '_' : 'path/seed=100+foobar=20+_hash=asdf+ext=.txt'
          }) == "foobar=20+seed=100+_hash=asdf+ext=.txt"
 
-        assert kf.pack({
+        assert kn.pack({
              'seed' : '100',
              'foobar' : '20',
              '_hash' : 'asdf',
@@ -123,7 +123,7 @@ class TestKeyname(unittest.TestCase):
              '_' : '~/more=path/+blah/seed=100+foobar=20+_hash=asdf+ext=.txt'
          }) == "foobar=20+seed=100+_hash=asdf+ext=.txt"
 
-        assert kf.pack({
+        assert kn.pack({
              'seed' : '100',
              'foobar' : '20',
              '_hash' : 'asdf',
@@ -132,7 +132,7 @@ class TestKeyname(unittest.TestCase):
          }) == "foobar=20+seed=100+_hash=asdf+ext=.txt"
 
         # missing extension
-        assert kf.pack({
+        assert kn.pack({
              '_hash' : 'asdf',
              'foobar' : '20',
              'seed' : '100',
