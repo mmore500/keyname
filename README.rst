@@ -38,6 +38,8 @@ Keyname is built around the following file name convention:
 
   - the :code:`ext` (extension) key is always placed last
 
+  - the key :code:`_` is reserved for the original filename
+
 For example,  :code:`key1=val1+key2=val2+_key3=val3+ext=.txt`.
 
 .. code-block:: python3
@@ -51,8 +53,8 @@ For example,  :code:`key1=val1+key2=val2+_key3=val3+ext=.txt`.
     'key1' : 'val1',
     '_key3' : 'val3',
   })
-  
-  # returns {'key' : 'val', 'ext' : '.txt'}
+
+  # returns {'key' : 'val', 'ext' : '.txt', '_' : 'path/to/key=val+ext=.txt'}
   kf.unpack('path/to/key=val+ext=.txt')
 
 

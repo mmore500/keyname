@@ -28,25 +28,28 @@ class TestKeyname(unittest.TestCase):
             '_hash' : 'asdf',
             'ext' : '.txt'
         }
-        assert kf.unpack("seed=100+foobar=20+_hash=asdf+ext=.txt") == goal
+
+        name = "seed=100+foobar=20+_hash=asdf+ext=.txt"
+        goal['_'] = name
+        assert kf.unpack(name) == goal
 
         # reorderings
-        assert kf.unpack("foobar=20+seed=100+_hash=asdf+ext=.txt") == goal
-        assert kf.unpack("_hash=asdf+foobar=20+seed=100+ext=.txt") == goal
+        name = "foobar=20+seed=100+_hash=asdf+ext=.txt"
+        goal['_'] = name
+        assert kf.unpack(name) == goal
 
-        # missing and extra
-        assert kf.unpack("seed=100+_hash=asdf+ext=.txt") != goal
-        assert kf.unpack("seed=100+bz=bp+foobar=20+_hash=asdf+ext=.txt") != goal
-
-        # changed values
-        assert kf.unpack("seed=10+foobar=20+_hash=asdf+ext=.txt") != goal
-        assert kf.unpack("sed=100+foobar=20+_hash=asdf+ext=.txt") != goal
-        assert kf.unpack("sed=100+foobar=20+hash=asdf+ext=.txt") != goal
+        name = "_hash=asdf+foobar=20+seed=100+ext=.txt"
+        goal['_'] = name
+        assert kf.unpack(name) == goal
 
         # should ignore path
-        assert kf.unpack("path/seed=100+foobar=20+_hash=asdf+ext=.txt") == goal
-        assert kf.unpack(
-            "~/more=path/+blah/seed=100+foobar=20+_hash=asdf+ext=.txt") == goal
+        name = "path/seed=100+foobar=20+_hash=asdf+ext=.txt"
+        goal['_'] = name
+        assert kf.unpack(name) == goal
+
+        name = "~/more=path/+blah/seed=100+foobar=20+_hash=asdf+ext=.txt"
+        goal['_'] = name
+        assert kf.unpack(name) == goal
 
     def test_001_pack(self):
         """Test packing."""
@@ -94,6 +97,39 @@ class TestKeyname(unittest.TestCase):
              '_hash' : 'asdf',
              'ext' : '.txt'
          }) == "aseed=a100+foobar=blip+_hash=asdf+ext=.txt"
+
+        # should ignore '_' key
+        assert kf.pack({
+             'seed' : '100',
+             'foobar' : '20',
+             '_hash' : 'asdf',
+             'ext' : '.txt',
+             '_' : 'foobar=20+seed=100+_hash=asdf+ext=.txt'
+         }) == "foobar=20+seed=100+_hash=asdf+ext=.txt"
+
+        assert kf.pack({
+             'seed' : '100',
+             'foobar' : '20',
+             '_hash' : 'asdf',
+             'ext' : '.txt',
+             '_' : 'path/seed=100+foobar=20+_hash=asdf+ext=.txt'
+         }) == "foobar=20+seed=100+_hash=asdf+ext=.txt"
+
+        assert kf.pack({
+             'seed' : '100',
+             'foobar' : '20',
+             '_hash' : 'asdf',
+             'ext' : '.txt',
+             '_' : '~/more=path/+blah/seed=100+foobar=20+_hash=asdf+ext=.txt'
+         }) == "foobar=20+seed=100+_hash=asdf+ext=.txt"
+
+        assert kf.pack({
+             'seed' : '100',
+             'foobar' : '20',
+             '_hash' : 'asdf',
+             'ext' : '.txt',
+             '_' : '"whatever+=/"'
+         }) == "foobar=20+seed=100+_hash=asdf+ext=.txt"
 
         # missing extension
         assert kf.pack({
