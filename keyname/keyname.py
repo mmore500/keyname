@@ -10,7 +10,7 @@ def unpack(filename):
     return {
         k : v
         for k, v in [
-            str.split('=', maxsplit=1) 
+            str.split('=', 1) # maxsplit=1 
             if '=' in str else (str, '')
             for str in os.path.basename(filename).split('+')
         ] + [ ('_', filename) ]
