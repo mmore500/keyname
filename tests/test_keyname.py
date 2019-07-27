@@ -51,6 +51,27 @@ class TestKeyname(unittest.TestCase):
         goal['_'] = name
         assert kn.unpack(name) == goal
 
+        name = "just/a/regular/file.pdf"
+        assert kn.unpack(name) == {
+            'file.pdf' : '',
+            '_' : 'just/a/regular/file.pdf'
+        }
+
+        name = "key/with/no+=value/file+ext=.pdf"
+        assert kn.unpack(name) == {
+            'file' : '',
+            'ext' : '.pdf',
+            '_' : 'key/with/no+=value/file+ext=.pdf'
+        }
+
+        name = "multiple/=s/file=biz=blah+ext=.pdf"
+        assert kn.unpack(name) == {
+            'file' : 'biz=blah',
+            'ext' : '.pdf',
+            '_' : 'multiple/=s/file=biz=blah+ext=.pdf'
+        }
+
+
     def test_001_pack(self):
         """Test packing."""
 
