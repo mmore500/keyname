@@ -3,7 +3,15 @@
 """Console script for keyname."""
 import sys
 import click
-import keyname as kn
+try:
+    # "myapp" case
+    from . import keyname as kn
+    from . import version as knversion
+except:
+    # "__main__" case
+    import keyname as kn
+    import version as knversion
+
 
 @click.group()
 def main():
@@ -12,7 +20,7 @@ def main():
 @main.command()
 def version(args=None):
     """Print version information and exit."""
-    click.echo( kn.__version__ )
+    click.echo( knversion.__version__ )
     return 0
 
 @main.command()
