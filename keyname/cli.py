@@ -3,8 +3,7 @@
 """Console script for keyname."""
 import sys
 import click
-import keyname
-from keyname import keyname as kn
+import keyname as kn
 
 @click.group()
 def main():
@@ -13,7 +12,7 @@ def main():
 @main.command()
 def version(args=None):
     """Print version information and exit."""
-    click.echo( keyname.__version__ )
+    click.echo( kn.__version__ )
     return 0
 
 @main.command()
