@@ -2,6 +2,7 @@
 
 """Console script for keyname."""
 import sys
+import subprocess
 import click
 try:
     # "myapp" case
@@ -82,6 +83,43 @@ def extract(keys):
         if k in keyname_attributes:
             click.echo( keyname_attributes[ k ] )
     return 0
+
+@main.command()
+@click.option('--copy/--move', default=True)
+@click.option('--keep/--drop', default=True)
+@click.argument('target', nargs=1)
+@click.argument('keys', nargs=-1)
+def stash(copy, keep, target, keys):
+    """Rename target, writing dropped key-value pairs to a metadata file."""
+    dest = subprocess.run(
+        " ".join([
+            "echo", target,
+            "|",
+            "keyname", "keep" if keep else "drop",
+        ] + list(keys)),
+        shell=True,
+        stdout=subprocess.PIPE,
+    ).stdout.decode('utf-8').rstrip("\n")
+    stash = subprocess.run(
+        " ".join([
+            "echo", target,
+            "|",
+            "keyname", "keep" if not keep else "drop",
+        ] + list(keys)),
+        shell=True,
+        stdout=subprocess.PIPE,
+    ).stdout.decode('utf-8').rstrip("\n")
+
+    subprocess.run([
+        "cp" if copy else "mv", target, dest
+    ], stdout=subprocess.DEVNULL)
+    click.echo("created data file " + dest)
+
+    subprocess.run(" ".join([
+        "echo", stash,
+        ">", dest + ".meta"
+    ]), shell=True, stdout=subprocess.DEVNULL)
+    click.echo("created metadata file " + dest + ".meta")
 
 if __name__ == "__main__":
     sys.exit(cli())  # pragma: no cover
