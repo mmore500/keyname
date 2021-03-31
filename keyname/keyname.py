@@ -5,17 +5,21 @@ import os
 """Main module."""
 
 
-def unpack(filename):
+def unpack(filename, source_attr=True):
 
-    return {
+    res = {
         k : v
         for k, v in [
             str.split('=', 1) # maxsplit=1
             if '=' in str else (str, '')
             for str in os.path.basename(filename).split('+')
-        ] + [ ('_', filename) ]
+        ]
     }
 
+    if source_attr:
+        res['_'] = filename
+
+    return res
 
 def pack(dict):
 

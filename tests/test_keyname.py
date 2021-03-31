@@ -32,29 +32,42 @@ class TestKeyname(unittest.TestCase):
         name = "seed=100+foobar=20+_hash=asdf+ext=.txt"
         goal['_'] = name
         assert kn.unpack(name) == goal
+        goal.pop('_')
+        assert kn.unpack(name, source_attr=False) == goal
 
         # reorderings
         name = "foobar=20+seed=100+_hash=asdf+ext=.txt"
         goal['_'] = name
         assert kn.unpack(name) == goal
+        goal.pop('_')
+        assert kn.unpack(name, source_attr=False) == goal
 
         name = "_hash=asdf+foobar=20+seed=100+ext=.txt"
         goal['_'] = name
         assert kn.unpack(name) == goal
+        goal.pop('_')
+        assert kn.unpack(name, source_attr=False) == goal
 
         # should ignore path
         name = "path/seed=100+foobar=20+_hash=asdf+ext=.txt"
         goal['_'] = name
         assert kn.unpack(name) == goal
+        goal.pop('_')
+        assert kn.unpack(name, source_attr=False) == goal
 
         name = "~/more=path/+blah/seed=100+foobar=20+_hash=asdf+ext=.txt"
         goal['_'] = name
         assert kn.unpack(name) == goal
+        goal.pop('_')
+        assert kn.unpack(name, source_attr=False) == goal
 
         name = "just/a/regular/file.pdf"
         assert kn.unpack(name) == {
             'file.pdf' : '',
             '_' : 'just/a/regular/file.pdf'
+        }
+        assert kn.unpack(name, source_attr=False) == {
+            'file.pdf' : '',
         }
 
         name = "key/with/no+=value/file+ext=.pdf"
@@ -63,12 +76,20 @@ class TestKeyname(unittest.TestCase):
             'ext' : '.pdf',
             '_' : 'key/with/no+=value/file+ext=.pdf'
         }
+        assert kn.unpack(name, source_attr=False) == {
+            'file' : '',
+            'ext' : '.pdf',
+        }
 
         name = "multiple/=s/file=biz=blah+ext=.pdf"
         assert kn.unpack(name) == {
             'file' : 'biz=blah',
             'ext' : '.pdf',
             '_' : 'multiple/=s/file=biz=blah+ext=.pdf'
+        }
+        assert kn.unpack(name, source_attr=False) == {
+            'file' : 'biz=blah',
+            'ext' : '.pdf',
         }
 
 
