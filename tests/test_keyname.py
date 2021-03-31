@@ -159,6 +159,20 @@ class TestKeyname(unittest.TestCase):
              'seed' : '100',
          }) == "foobar=20+seed=100+_hash=asdf"
 
+    def test_002_demote(self):
+        """Test demoting."""
+
+        assert kn.demote(
+            "foobar=20+seed=100+_hash=asdf+ext=.txt"
+        ) == "foobar%20~seed%100~_hash%asdf~ext%.txt"
+
+
+    def test_003_promote(self):
+        """Test promoting."""
+
+        assert kn.promote(
+            "foobar%20~seed%100~_hash%asdf~ext%.txt"
+        ) == "foobar=20+seed=100+_hash=asdf+ext=.txt"
 
 
     def test_command_line_interface(self):

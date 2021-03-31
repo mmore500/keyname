@@ -10,7 +10,7 @@ def unpack(filename):
     return {
         k : v
         for k, v in [
-            str.split('=', 1) # maxsplit=1 
+            str.split('=', 1) # maxsplit=1
             if '=' in str else (str, '')
             for str in os.path.basename(filename).split('+')
         ] + [ ('_', filename) ]
@@ -43,3 +43,21 @@ def pack(dict):
         + sorted(underscore.items())
         + sorted(ext.items())
     ])
+
+def demote( keyname_string ):
+    assert '~' not in keyname_string
+    assert '%' not in keyname_string
+    return keyname_string.replace(
+        '+', '~'
+    ).replace(
+        '=', '%'
+    )
+
+def promote( demoted_keyname_string ):
+    assert '+' not in demoted_keyname_string
+    assert '=' not in demoted_keyname_string
+    return demoted_keyname_string.replace(
+        '~', '+'
+    ).replace(
+        '%', '='
+    )
