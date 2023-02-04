@@ -25,6 +25,20 @@ def version(args=None):
     return 0
 
 @main.command()
+@click.option('--mkdir', is_flag=True)
+def chop(mkdir):
+    """Combine option-argument pairs into a keyname string."""
+    click.echo( kn.chop(input(), mkdir=mkdir) )
+    return 0
+
+@main.command()
+def rejoin():
+    """Combine option-argument pairs into a keyname string."""
+    click.echo( kn.rejoin(input()) )
+    return 0
+
+
+@main.command()
 @click.argument('keys', nargs=-1)
 def keep(keys):
     """Filter stdin keyname string to keep argument keys."""

@@ -4,6 +4,7 @@
 """Tests for `keyname` package."""
 
 
+import tempfile
 import unittest
 from click.testing import CliRunner
 
@@ -194,6 +195,53 @@ class TestKeyname(unittest.TestCase):
         assert kn.promote(
             "foobar%20~seed%100~_hash%asdf~ext%.txt"
         ) == "foobar=20+seed=100+_hash=asdf+ext=.txt"
+
+
+    def test_004_chop_rejoin(self):
+        """Test chopping."""
+
+        assert kn.chop(kn.pack({
+             'seed' : '100',
+             'foobar' : '20',
+             '_hash' : 'asdf',
+             'ext' : '.txt'
+         })) == "foobar=20+seed=100+_hash=asdf+ext=.txt"
+
+        assert kn.chop(kn.pack({
+             'seed' : '100',
+             'foobar' : '20',
+             '_hash' : 'asdf',
+             'ext' : '.txt',
+             '_' : '~/more=path/+blah/seed=100+foobar=20+_hash=asdf+ext=.txt'
+         })) == "foobar=20+seed=100+_hash=asdf+ext=.txt"
+
+        packed = kn.pack({
+              'seed' : '100' * 100,
+              'foobar' : '20',
+              '_hash' : 'asdf',
+              'ext' : '.txt',
+              '_' : '~/more=path/+blah/seed=100+foobar=20+_hash=asdf+ext=.txt'
+          })
+        chopped = kn.chop(packed, mkdir=True)
+
+        assert all(len(path_part) < 204 for path_part in chopped.split("/"))
+        assert chopped == "foobar=20+seed=10010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010.../0100100100100100100100100100100100100100100100100100100100100100100100100100100100100100100100100100100100100100100+_hash=asdf+ext=.txt"
+
+        assert kn.rejoin(chopped) == packed
+
+        with open(chopped, "w+") as file:
+            file.write("should work")
+
+        path_packed = f"{tempfile.mkdtemp()}/{'baz' * 100}/{packed}"
+        path_chopped = kn.chop(path_packed, mkdir=True)
+        assert all(
+            len(path_part) < 204 for path_part in path_chopped.split("/")
+        )
+
+        with open(path_chopped, "w+") as file:
+            file.write("should work")
+
+        assert kn.rejoin(path_chopped) == path_packed
 
 
     def test_command_line_interface(self):

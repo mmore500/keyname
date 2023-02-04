@@ -2,6 +2,8 @@
 
 import os
 
+import more_itertools as mit
+
 """Main module."""
 
 
@@ -65,3 +67,17 @@ def promote( demoted_keyname_string ):
     ).replace(
         '%', '='
     )
+
+def chop( keyname_string, mkdir=False ):
+    chopped_path = "/".join(
+        ".../".join(
+            map("".join, mit.chunked(path_part, 200))
+        )
+        for path_part in keyname_string.split("/")
+    )
+    if mkdir:
+        os.makedirs(os.path.dirname(chopped_path), exist_ok=True)
+    return chopped_path
+
+def rejoin( chopped_keyname_path ):
+    return chopped_keyname_path.replace(".../", "")
