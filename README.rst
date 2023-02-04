@@ -64,6 +64,7 @@ Trying to use longer filenames will fail.
 
 Keyname provides tools to work around this restriction by chunking overlength filenames into nested directories and a file.
 (Basically, using the path to store the filename.)
+Path segments with continuations are denoted with the suffix "...".
 
 .. code-block:: python3
 
