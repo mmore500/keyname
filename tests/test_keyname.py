@@ -244,6 +244,12 @@ class TestKeyname(unittest.TestCase):
         assert kn.rejoin(path_chopped) == path_packed
 
 
+        packed = kn.pack(
+            {**{'seed' : '100' * 60}, **{"ext" : ".buzzzz.baz.gz"}}
+        )
+        chopped = kn.chop(packed)
+        assert chopped.endswith("+ext=.buzzzz.baz.gz")
+
     def test_command_line_interface(self):
         """Test the CLI."""
         runner = CliRunner()
