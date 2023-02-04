@@ -6,8 +6,8 @@ keyname
 .. image:: https://img.shields.io/pypi/v/keyname.svg
         :target: https://pypi.python.org/pypi/keyname
 
-.. image:: https://img.shields.io/travis/mmore500/keyname.svg
-        :target: https://travis-ci.org/mmore500/keyname
+.. image:: https://github.com/mmore500/keyname/actions/workflows/CI.yml/badge.svg
+        :target: https://github.com/mmore500/keyname/actions/workflows/CI.yml
 
 .. image:: https://readthedocs.org/projects/keyname/badge/?version=latest
         :target: https://keyname.readthedocs.io/en/latest/?badge=latest
