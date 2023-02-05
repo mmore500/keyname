@@ -4,6 +4,7 @@ import os
 from string import ascii_letters
 
 import more_itertools as mit
+from retry import retry
 
 """Main module."""
 
@@ -69,7 +70,7 @@ def promote( demoted_keyname_string ):
         '%', '='
     )
 
-def chop( keyname_string, mkdir=False ):
+def chop( keyname_string, mkdir=False, logger=None ):
     chopped_path = "/".join(
         ".../".join(
             map("".join, mit.chunked(path_part, 200))
@@ -102,7 +103,16 @@ def chop( keyname_string, mkdir=False ):
         chopped_path = f"{os.path.dirname(chopped_path)}/{rechopped_basename}"
 
     if mkdir:
-        os.makedirs(os.path.dirname(chopped_path), exist_ok=True)
+        retry(
+            tries=10,
+            delay=1,
+            max_delay=10,
+            backoff=2,
+            jitter=(0, 4),
+            logger=logger,
+        )(os.makedirs)(
+            os.path.dirname(chopped_path), exist_ok=True
+        )
     return chopped_path
 
 def rejoin( chopped_keyname_path ):
