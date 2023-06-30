@@ -136,4 +136,4 @@ def stash(copy, keep, target, keys):
     click.echo("created metadata file " + dest + ".meta")
 
 if __name__ == "__main__":
-    sys.exit(cli())  # pragma: no cover
+    sys.exit(main())  # pragma: no cover
