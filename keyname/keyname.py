@@ -71,7 +71,7 @@ def promote( demoted_keyname_string ):
     )
 
 def chop( keyname_string, mkdir=False, logger=None ):
-    chunk_size = os.environ.get("KEYNAME_CHOP_CHUNK_SIZE", 200)
+    chunk_size = int(os.environ.get("KEYNAME_CHOP_CHUNK_SIZE", 200))
     chopped_path = "/".join(
         ".../".join(
             map("".join, mit.chunked(path_part, chunk_size))
