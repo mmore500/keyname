@@ -1,9 +1,10 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
 """Tests for `keyname` package."""
 
 
+import os
 import tempfile
 import unittest
 from click.testing import CliRunner
@@ -50,43 +51,43 @@ class TestKeyname(unittest.TestCase):
         assert kn.unpack(name, source_attr=False) == goal
 
         # should ignore path
-        name = "path/seed=100+foobar=20+_hash=asdf+ext=.txt"
+        name = f"path{os.sep}seed=100+foobar=20+_hash=asdf+ext=.txt"
         goal['_'] = name
         assert kn.unpack(name) == goal
         goal.pop('_')
         assert kn.unpack(name, source_attr=False) == goal
 
-        name = "~/more=path/+blah/seed=100+foobar=20+_hash=asdf+ext=.txt"
+        name = f"~{os.sep}more=path{os.sep}+blah{os.sep}seed=100+foobar=20+_hash=asdf+ext=.txt"
         goal['_'] = name
         assert kn.unpack(name) == goal
         goal.pop('_')
         assert kn.unpack(name, source_attr=False) == goal
 
-        name = "just/a/regular/file.pdf"
+        name = f"just{os.sep}a{os.sep}regular{os.sep}file.pdf"
         assert kn.unpack(name) == {
             'file.pdf' : '',
-            '_' : 'just/a/regular/file.pdf'
+            '_' : f'just{os.sep}a{os.sep}regular{os.sep}file.pdf'
         }
         assert kn.unpack(name, source_attr=False) == {
             'file.pdf' : '',
         }
 
-        name = "key/with/no+=value/file+ext=.pdf"
+        name = f"key{os.sep}with{os.sep}no+=value{os.sep}file+ext=.pdf"
         assert kn.unpack(name) == {
             'file' : '',
             'ext' : '.pdf',
-            '_' : 'key/with/no+=value/file+ext=.pdf'
+            '_' : f'key{os.sep}with{os.sep}no+=value{os.sep}file+ext=.pdf'
         }
         assert kn.unpack(name, source_attr=False) == {
             'file' : '',
             'ext' : '.pdf',
         }
 
-        name = "multiple/=s/file=biz=blah+ext=.pdf"
+        name = f"multiple{os.sep}=s{os.sep}file=biz=blah+ext=.pdf"
         assert kn.unpack(name) == {
             'file' : 'biz=blah',
             'ext' : '.pdf',
-            '_' : 'multiple/=s/file=biz=blah+ext=.pdf'
+            '_' : f'multiple{os.sep}=s{os.sep}file=biz=blah+ext=.pdf'
         }
         assert kn.unpack(name, source_attr=False) == {
             'file' : 'biz=blah',
@@ -155,7 +156,7 @@ class TestKeyname(unittest.TestCase):
              'foobar' : '20',
              '_hash' : 'asdf',
              'ext' : '.txt',
-             '_' : 'path/seed=100+foobar=20+_hash=asdf+ext=.txt'
+             '_' : f'path{os.sep}seed=100+foobar=20+_hash=asdf+ext=.txt'
          }) == "foobar=20+seed=100+_hash=asdf+ext=.txt"
 
         assert kn.pack({
@@ -163,7 +164,7 @@ class TestKeyname(unittest.TestCase):
              'foobar' : '20',
              '_hash' : 'asdf',
              'ext' : '.txt',
-             '_' : '~/more=path/+blah/seed=100+foobar=20+_hash=asdf+ext=.txt'
+             '_' : f'~{os.sep}more=path{os.sep}+blah{os.sep}seed=100+foobar=20+_hash=asdf+ext=.txt'
          }) == "foobar=20+seed=100+_hash=asdf+ext=.txt"
 
         assert kn.pack({
@@ -171,7 +172,7 @@ class TestKeyname(unittest.TestCase):
              'foobar' : '20',
              '_hash' : 'asdf',
              'ext' : '.txt',
-             '_' : '"whatever+=/"'
+             '_' : f'"whatever+={os.sep}"'
          }) == "foobar=20+seed=100+_hash=asdf+ext=.txt"
 
         # missing extension
@@ -212,7 +213,7 @@ class TestKeyname(unittest.TestCase):
              'foobar' : '20',
              '_hash' : 'asdf',
              'ext' : '.txt',
-             '_' : '~/more=path/+blah/seed=100+foobar=20+_hash=asdf+ext=.txt'
+             '_' : f'~{os.sep}more=path{os.sep}+blah{os.sep}seed=100+foobar=20+_hash=asdf+ext=.txt'
          })) == "foobar=20+seed=100+_hash=asdf+ext=.txt"
 
         packed = kn.pack({
@@ -220,22 +221,22 @@ class TestKeyname(unittest.TestCase):
               'foobar' : '20',
               '_hash' : 'asdf',
               'ext' : '.txt',
-              '_' : '~/more=path/+blah/seed=100+foobar=20+_hash=asdf+ext=.txt'
+              '_' : f'~{os.sep}more=path{os.sep}+blah{os.sep}seed=100+foobar=20+_hash=asdf+ext=.txt'
           })
         chopped = kn.chop(packed, mkdir=True)
 
-        assert all(len(path_part) < 204 for path_part in chopped.split("/"))
-        assert chopped == "foobar=20+seed=10010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010.../0100100100100100100100100100100100100100100100100100100100100100100100100100100100100100100100100100100100100100100+_hash=asdf+ext=.txt"
+        assert all(len(path_part) < 204 for path_part in chopped.split(os.sep))
+        assert chopped == f"foobar=20+seed=10010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010...{os.sep}0100100100100100100100100100100100100100100100100100100100100100100100100100100100100100100100100100100100100100100+_hash=asdf+ext=.txt"
 
         assert kn.rejoin(chopped) == packed
 
         with open(chopped, "w+") as file:
             file.write("should work")
 
-        path_packed = f"{tempfile.mkdtemp()}/{'baz' * 100}/{packed}"
+        path_packed = f"{tempfile.mkdtemp()}{os.sep}{'baz' * 100}{os.sep}{packed}"
         path_chopped = kn.chop(path_packed, mkdir=True)
         assert all(
-            len(path_part) < 204 for path_part in path_chopped.split("/")
+            len(path_part) < 204 for path_part in path_chopped.split(os.sep)
         )
 
         with open(path_chopped, "w+") as file:
