@@ -9,6 +9,11 @@ from retry import retry
 
 """Main module."""
 
+def _ellipses() -> str:
+    if os.name == "nt":  # windows
+        return "---"
+    else:
+        return "..."
 
 def unpack(filename, source_attr=True):
 
@@ -80,7 +85,7 @@ def chop( keyname_string, mkdir=False, logger=None ):
             }""",
         )
     chopped_path = os.sep.join(
-        f"...{os.sep}".join(
+        f"{_ellipses()}{os.sep}".join(
             map("".join, mit.chunked(path_part, chunk_size))
         )
         for path_part in keyname_string.split(os.sep)
@@ -93,7 +98,7 @@ def chop( keyname_string, mkdir=False, logger=None ):
     # 3. remove last .../
     # to ensure at least 100 contiguous characters at end
     if (
-        os.path.dirname(chopped_path).endswith("...")
+        os.path.dirname(chopped_path).endswith(_ellipses())
         and all(
             c in "." + ascii_letters for c in os.path.basename(chopped_path)
         )
@@ -102,11 +107,11 @@ def chop( keyname_string, mkdir=False, logger=None ):
         ).endswith(".")
     ):
         # remove last occurence of .../
-        chopped_path = chopped_path[::-1].replace(f"{os.sep}...", "", 1)[::-1]
+        chopped_path = chopped_path[::-1].replace(f"{os.sep}{_ellipses()}", "", 1)[::-1]
 
-        rechopped_basename = f"...{os.sep}".join(
+        rechopped_basename = f"{_ellipses()}{os.sep}".join(
             map("".join, mit.chunked(os.path.basename(chopped_path), 100))
-        )[::-1].replace(f"{os.sep}...", "", 1)[::-1] # remove last .../
+        )[::-1].replace(f"{os.sep}{_ellipses()}", "", 1)[::-1] # remove last .../
 
         chopped_path = Path(os.path.dirname(chopped_path)) / rechopped_basename
 
@@ -125,4 +130,4 @@ def chop( keyname_string, mkdir=False, logger=None ):
     return str(Path(chopped_path))
 
 def rejoin( chopped_keyname_path ):
-    return chopped_keyname_path.replace(f"...{os.sep}", "")
+    return chopped_keyname_path.replace(f"{_ellipses()}{os.sep}", "")
