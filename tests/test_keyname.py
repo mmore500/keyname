@@ -225,6 +225,7 @@ class TestKeyname(unittest.TestCase):
               '_' : f'~{os.sep}more=path{os.sep}+blah{os.sep}seed=100+foobar=20+_hash=asdf+ext=.txt'
           })
         chopped = kn.chop(packed, mkdir=True)
+        assert not os.sep * 2 in chopped
 
         assert all(len(path_part) < 204 for path_part in chopped.split(os.sep))
         assert chopped == f"foobar=20+seed=10010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010...{os.sep}0100100100100100100100100100100100100100100100100100100100100100100100100100100100100100100100100100100100100100100+_hash=asdf+ext=.txt"
