@@ -76,11 +76,11 @@ def chop( keyname_string, mkdir=False, logger=None ):
         chunk_size,
         os.environ.get("KEYNAME_CHOP_CHUNK_SIZE", None),
     )
-    chopped_path = "/".join(
-        ".../".join(
+    chopped_path = os.sep.join(
+        f"...{os.sep}".join(
             map("".join, mit.chunked(path_part, chunk_size))
         )
-        for path_part in keyname_string.split("/")
+        for path_part in keyname_string.split(os.sep)
     )
 
     # handle file extention getting chopped apart
@@ -99,13 +99,14 @@ def chop( keyname_string, mkdir=False, logger=None ):
         ).endswith(".")
     ):
         # remove last occurence of .../
-        chopped_path = chopped_path[::-1].replace("/...", "", 1)[::-1]
+        chopped_path = chopped_path[::-1].replace(f"{os.sep}...", "", 1)[::-1]
 
-        rechopped_basename = ".../".join(
+        rechopped_basename = f"...{os.sep}".join(
             map("".join, mit.chunked(os.path.basename(chopped_path), 100))
-        )[::-1].replace("/...", "", 1)[::-1]  # remove last .../
+        )[::-1].replace(f"{os.sep}...", "", 1)[::-1] # remove last .../
 
-        chopped_path = f"{os.path.dirname(chopped_path)}/{rechopped_basename}"
+        chopped_path = f"{os.path.dirname(chopped_path)}{os.sep}{rechopped_basename}"
+
 
     if mkdir:
         retry(
@@ -121,4 +122,4 @@ def chop( keyname_string, mkdir=False, logger=None ):
     return chopped_path
 
 def rejoin( chopped_keyname_path ):
-    return chopped_keyname_path.replace(".../", "")
+    return chopped_keyname_path.replace(f"...{os.sep}", "")
