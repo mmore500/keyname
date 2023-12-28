@@ -232,8 +232,11 @@ class TestKeyname(unittest.TestCase):
 
         assert kn.rejoin(chopped) == packed
 
-        assert os.path.isdir("foobar=20+seed=10010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010...")
+        dirname = "foobar=20+seed=10010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010..."
+        assert os.path.isdir(dirname)
 
+        Path(dirname).touch()  # check file in dirmane
+        Path(Path(dirname)/"example.txt").touch()  # check file in dirmane
         Path(os.path.basename(chopped)).touch()  # check basename is legal
         Path(chopped).touch()
         Path(chopped).unlink()
