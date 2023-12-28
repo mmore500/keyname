@@ -5,6 +5,7 @@
 
 
 import os
+from pathlib import Path
 import tempfile
 import unittest
 from click.testing import CliRunner
@@ -232,8 +233,10 @@ class TestKeyname(unittest.TestCase):
 
         assert os.path.isdir("foobar=20+seed=10010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010...")
 
-        with open(chopped, "w+") as file:
-            file.write("should work")
+        Path(chopped).touch()
+        Path(chopped).unlink()
+        Path(chopped).write_text("should work")
+        assert Path(chopped).read_text() == "should work"
 
         path_packed = f"{tempfile.mkdtemp()}{os.sep}{'baz' * 100}{os.sep}{packed}"
         path_chopped = kn.chop(path_packed, mkdir=True)
@@ -241,8 +244,10 @@ class TestKeyname(unittest.TestCase):
             len(path_part) < 204 for path_part in path_chopped.split(os.sep)
         )
 
-        with open(path_chopped, "w+") as file:
-            file.write("should work")
+        Path(path_chopped).touch()
+        Path(path_chopped).unlink()
+        Path(path_chopped).write_text("should work")
+        assert Path(chopped).read_text() == "should work"
 
         assert kn.rejoin(path_chopped) == path_packed
 
