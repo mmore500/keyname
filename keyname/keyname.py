@@ -108,7 +108,7 @@ def chop( keyname_string, mkdir=False, logger=None ):
             map("".join, mit.chunked(os.path.basename(chopped_path), 100))
         )[::-1].replace(f"{os.sep}...", "", 1)[::-1] # remove last .../
 
-        chopped_path = f"{os.path.dirname(chopped_path)}{os.sep}{rechopped_basename}"
+        chopped_path = Path(os.path.dirname(chopped_path)) / rechopped_basename
 
 
     if mkdir:
