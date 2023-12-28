@@ -75,9 +75,9 @@ def chop( keyname_string, mkdir=False, logger=None ):
     chunk_size = int(os.environ.get("KEYNAME_CHOP_CHUNK_SIZE", 200))
     if chunk_size <= 1:
         raise ValueError(
-            f"bad chunk size {chunk_size}, KEYNAME_CHOP_CHUNK_SIZE={
-                os.environ.get("KEYNAME_CHOP_CHUNK_SIZE", None)
-            }",
+            f"""bad chunk size {chunk_size}, KEYNAME_CHOP_CHUNK_SIZE={
+                os.environ.get('KEYNAME_CHOP_CHUNK_SIZE', None)
+            }""",
         )
     chopped_path = os.sep.join(
         f"...{os.sep}".join(
