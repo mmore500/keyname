@@ -234,6 +234,7 @@ class TestKeyname(unittest.TestCase):
 
         assert os.path.isdir("foobar=20+seed=10010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010010...")
 
+        Path(os.path.basename(chopped)).touch()  # check basename is legal
         Path(chopped).touch()
         Path(chopped).unlink()
         Path(chopped).write_text("should work")
