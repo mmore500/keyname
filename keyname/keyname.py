@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import os
+from pathlib import Path
 from string import ascii_letters
 
 import more_itertools as mit
@@ -121,7 +122,7 @@ def chop( keyname_string, mkdir=False, logger=None ):
         )(os.makedirs)(
             os.path.dirname(chopped_path), exist_ok=True
         )
-    return chopped_path.replace(os.sep * 2, os.sep)
+    return str(Path(chopped_path))
 
 def rejoin( chopped_keyname_path ):
     return chopped_keyname_path.replace(f"...{os.sep}", "")
